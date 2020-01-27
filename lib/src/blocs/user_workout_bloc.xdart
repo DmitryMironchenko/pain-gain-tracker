@@ -1,0 +1,36 @@
+import 'dart:async';
+
+import 'package:buttpaintracker/src/models/user_workout_model.dart';
+import 'package:rxdart/rxdart.dart';
+import '../resources/repository.dart';
+
+class UserWorkoutBloc {
+  final _repository = Repository();
+  final _userId = PublishSubject<String>();
+
+  final _workout = BehaviorSubject<UserWorkoutModel>();
+
+  // final _trailers = BehaviorSubject<Future<TrailerModel>>();
+
+  Function(String) get fetchUserWorkoutById => _userId.sink.add;
+
+  UserWorkoutBloc() {
+    _userId.stream.transform(_itemTransformer()).pipe(_workout);
+  }
+
+  dispose() async {
+    _userId.close();
+    await _workout.drain();
+    _workout.close();
+  }
+
+  _itemTransformer() {
+    return ScanStreamTransformer(
+      (Future<UserWorkoutModel> workout, String uid, int index) {
+        print(index);
+        workout = _repository.getUserWorkout(uid);
+        return workout;
+      },
+    );
+  }
+}

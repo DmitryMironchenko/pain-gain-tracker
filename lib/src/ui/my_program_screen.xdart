@@ -1,0 +1,40 @@
+import 'package:flutter/material.dart';
+
+class MyProgramPage extends StatefulWidget {
+  static const String routeName = '/my-program';
+
+  @override
+  _MyProgramPageState createState() => _MyProgramPageState();
+}
+
+class _MyProgramPageState extends State<MyProgramPage> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('My Program Page'),
+        ),
+        body: StreamBuilder(
+            stream: bloc.user,
+            builder: (context, AsyncSnapshot<FirebaseUserModel> snapshot) {
+              if (snapshot.hasData) {
+                return Text(
+                    'Hello, ${snapshot.data.firebaseUser?.displayName ?? snapshot.data.firebaseUser?.phoneNumber}. Let\'s start your workout!');
+              } else if (snapshot.hasError) {
+                return Text('Snapshot has error: ${snapshot.error.toString()}');
+              }
+
+              return Text('Foooo');
+            }));
+  }
+}
