@@ -49,9 +49,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       yield AuthStateLoading();
       final User user = await userRepository.getCurrentUser();
       yield AuthStateAuthenticated(user: user, isAutoLogIn: true);
+    } else {
+      yield AuthStateUnauthenticated();
     }
-
-    yield AuthStateUnauthenticated();
   }
 
   Stream<AuthState> _mapSignedInEvent({

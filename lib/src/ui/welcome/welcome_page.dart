@@ -1,5 +1,6 @@
 import 'package:buttpaintracker/src/blocs/auth/index.dart';
 import 'package:buttpaintracker/src/ui/welcome/welcome_anonymous_page.dart';
+import 'package:buttpaintracker/src/ui/welcome/welcome_username_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,7 +34,7 @@ class _WelcomePageState extends State<WelcomePage> {
         builder: (context, state) {
           if (state is AuthStateAuthenticated) {
             // Return Welcome %username page widget
-            return Text('Authenticated');
+            return WelcomeUserNamePage();
           } else if (state is AuthStateUnauthenticated) {
             // Return Welcome anonymous
             return WelcomeAnonymousPage();

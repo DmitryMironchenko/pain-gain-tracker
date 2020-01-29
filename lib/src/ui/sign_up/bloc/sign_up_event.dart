@@ -20,22 +20,32 @@ class SignUpWithPhoneNumberEvent extends SignUpEvent {
   }
 }
 
-class VerifyCode extends SignUpEvent {
-  final String code;
+class VerifyCodeEvent extends SignUpEvent {
+  final String verificationId;
+  final String smsCode;
 
-  VerifyCode({
-    @required this.code,
-  }) : assert(code != null);
+  VerifyCodeEvent({
+    @required this.smsCode,
+    @required this.verificationId,
+  }) : assert(smsCode != null && verificationId != null);
 
   @override
   String toString() {
-    return 'VerifyCode';
+    return 'VerifyCodeEvent';
   }
 }
 
-class ResendCode extends SignUpEvent {
+class ResendCodeEvent extends SignUpEvent {
+  final String phoneNumber;
+  final int forceResendingToken;
+
+  ResendCodeEvent({
+    @required this.phoneNumber,
+    @required this.forceResendingToken,
+  });
+
   @override
   String toString() {
-    return 'ResendCode';
+    return 'ResendCodeEvent';
   }
 }

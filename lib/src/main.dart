@@ -1,6 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:buttpaintracker/src/ui/sign_up/bloc/sign_up_bloc.dart';
-import 'package:buttpaintracker/src/ui/sign_up/enter_sent_code_page.dart';
 import 'package:buttpaintracker/src/ui/sign_up/register_by_phone_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,13 +24,6 @@ void main() {
                   ..add(AuthEventAppStarted());
               },
             ),
-            BlocProvider<SignUpBloc>(
-              create: (BuildContext context) {
-                final UserRepository userRepository =
-                    RepositoryProvider.of<UserRepository>(context);
-                return SignUpBloc(userRepository: userRepository);
-              },
-            ),
           ],
           child: App(),
         )),
@@ -49,7 +40,6 @@ class App extends StatelessWidget {
         '/': (context) => WelcomePage(),
         // When navigating to the "/second" route, build the SecondScreen widget.
         RegisterByPhonePage.routeName: (_) => RegisterByPhonePage(),
-        EnterCodeSentPage.routeName: (_) => EnterCodeSentPage(),
         // HomePage.routeName: (context) => HomePage(),
       },
     );

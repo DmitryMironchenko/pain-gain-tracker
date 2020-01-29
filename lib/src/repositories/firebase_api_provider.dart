@@ -58,17 +58,14 @@ class FirebaseAPIProvider {
 
   Future<SignInWithPhoneNumberResolution> signInWithPhoneNumber({
     @required String phoneNumber,
+    int forceResendingToken,
   }) async {
     final Completer _completer = Completer<SignInWithPhoneNumberResolution>();
 
     final PhoneVerificationCompleted verificationCompleted =
         (AuthCredential phoneAuthCredential) async {
       await _firebaseAuth.signInWithCredential(phoneAuthCredential);
-      // setState(() {
-      //   _message = 'Received phone auth credential: $phoneAuthCredential';
-      // });
 
-      // TODO: redirect to Welcome %username% page
       _completer.complete(SignInWithPhoneNumberResolution.success());
     };
 
@@ -79,7 +76,6 @@ class FirebaseAPIProvider {
 
     final PhoneCodeSent codeSent =
         (String verificationId, [int forceResendingToken]) async {
-      
       _completer.complete(
           SignInWithPhoneNumberResolution.codeVerificationRequested(
               verificationId: verificationId,
@@ -88,18 +84,18 @@ class FirebaseAPIProvider {
 
     final PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
         (String verificationId) {
-      // setState(() {
-      //   _message = 'codeAutoRetrievalTimeout, $_verificationId';
-      // });
+      // TODO: handle codeAutoRetrievalTimeout
     };
 
     _firebaseAuth.verifyPhoneNumber(
-        phoneNumber: phoneNumber,
-        timeout: const Duration(seconds: 5),
-        verificationCompleted: verificationCompleted,
-        verificationFailed: verificationFailed,
-        codeSent: codeSent,
-        codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
+      phoneNumber: phoneNumber,
+      timeout: const Duration(seconds: 5),
+      verificationCompleted: verificationCompleted,
+      verificationFailed: verificationFailed,
+      codeSent: codeSent,
+      codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
+      forceResendingToken: forceResendingToken,
+    );
     //.then((_) {
     // TRICKY: Should we actually complete Completer here? Or maybe complete only from callbacks.
     // _completer.complete(SignInWithPhoneNumberResolution.success());
@@ -108,7 +104,14 @@ class FirebaseAPIProvider {
     return _completer.future;
   }
 
-  Future<void> signInWithPhoneCredential(
+  Future<SignInWithPhoneNumberResolution> resendTokenAndSignInWithPhoneNumber({
+    @required String phoneNumber,
+    @required int forceResendingToken,
+  }) =>
+      signInWithPhoneNumber(
+          phoneNumber: phoneNumber, forceResendingToken: forceResendingToken);
+
+  Future<User> signInWithSmsCode(
       {String verificationId, String smsCode}) async {
     AuthCredential credential = PhoneAuthProvider.getCredential(
         verificationId: verificationId, smsCode: smsCode);
@@ -117,21 +120,11 @@ class FirebaseAPIProvider {
       AuthResult result = await _firebaseAuth.signInWithCredential(credential);
 
       if (result.user.uid != null) {
-        // setState(() {
-        //   _message = 'Signed in successfully!';
-        // });
-
-        // _navigateToHomePage();
-
-        return Future.value();
+        return getCurrentUser();
       }
 
       return Future.error(Exception('User is null'));
     } catch (e) {
-      // setState(() {
-      //   _message = 'Failed to sign in. Somwthing went wrong.';
-      // });
-
       return Future.error(e);
     }
   }

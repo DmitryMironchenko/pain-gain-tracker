@@ -3,6 +3,7 @@ import 'package:buttpaintracker/src/models/user.dart';
 class SignUpState {
   final User user;
   final bool isLoading;
+  final bool isSucceeded;
   final String error;
   final String verificationId;
   final int forceResendingToken;
@@ -11,6 +12,7 @@ class SignUpState {
   SignUpState({
     this.user,
     this.isLoading = false,
+    this.isSucceeded = false,
     this.error,
     this.verificationId,
     this.forceResendingToken,
@@ -25,6 +27,7 @@ class SignUpState {
 
   factory SignUpState.signUpSucceded(User user) => SignUpState(
         isLoading: false,
+        isSucceeded: true,
         user: user,
       );
 
